@@ -12,13 +12,28 @@ logger = logging.getLogger(__name__)
 DATASET_NAME = 'cifar10'
 
 
+class TransformSubset(torch.utils.data.Dataset):
+    """Wraps a Subset with a custom transform, avoiding duplicate dataset loads."""
+
+    def __init__(self, subset, transform):
+        self.subset = subset
+        self.transform = transform
+
+    def __getitem__(self, idx):
+        x, y = self.subset[idx]
+        return self.transform(x), y
+
+    def __len__(self):
+        return len(self.subset)
+
+
 def get_loaders(batch_size: int):
     train_transform, test_transform = get_transforms()
     pin_memory = torch.cuda.is_available()
     num_workers = min(2, os.cpu_count() or 1)
 
-    # Load the training set ONCE and split into train/val via indices
-    full_train = datasets.CIFAR10(root='./data', train=True, download=True, transform=train_transform)
+    # Load the training set ONCE (no transform) and split into train/val via indices
+    full_train = datasets.CIFAR10(root='./data', train=True, download=True, transform=None)
     test_set = datasets.CIFAR10(root='./data', train=False, download=True, transform=test_transform)
 
     total = len(full_train)
@@ -31,9 +46,9 @@ def get_loaders(batch_size: int):
     train_indices = indices[:train_size]
     val_indices = indices[train_size:]
 
-    train_dataset = Subset(full_train, train_indices)
-    val_base = datasets.CIFAR10(root='./data', train=True, download=False, transform=test_transform)
-    val_dataset = Subset(val_base, val_indices)
+    # Each subset gets its own transform via TransformSubset
+    train_dataset = TransformSubset(Subset(full_train, train_indices), train_transform)
+    val_dataset = TransformSubset(Subset(full_train, val_indices), test_transform)
 
     # Logging
     logger.info("=" * 50)
