@@ -15,7 +15,7 @@ N_CHANNELS = 3
 def compute_stats() -> dict:
     """Compute exact per-channel mean and std over the entire CIFAR-10 dataset."""
     transform = transforms.ToTensor()
-    dataset = datasets.CIFAR10(root='./data/raw', train=True, download=True, transform=transform)
+    dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
     loader = DataLoader(dataset, batch_size=1024, shuffle=False, num_workers=2)
 
     # Accumulate sum and sum-of-squares across ALL pixels for exact stats
