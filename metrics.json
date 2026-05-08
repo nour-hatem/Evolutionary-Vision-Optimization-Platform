@@ -1,7 +1,21 @@
 {
-  "accuracy": 0.8654,
-  "f1": 0.8642,
-  "train_loss": [
+  "epochs_run": 20,
+  "training_time_seconds": 551.2,
+  "config": {
+    "dataset": "cifar10",
+    "lr": 0.0005,
+    "num_filters": 64,
+    "num_layers": 3,
+    "dropout": 0.5,
+    "batch_size": 64,
+    "epochs": 20,
+    "num_classes": 10,
+    "input_channels": 3,
+    "weight_decay": 0.0001
+  },
+  "baseline_accuracy": 0.8654,
+  "baseline_f1": 0.8642,
+  "baseline_train_loss": [
     1.9208,
     1.5627,
     1.3684,
@@ -23,7 +37,7 @@
     0.4521,
     0.4518
   ],
-  "val_loss": [
+  "baseline_val_loss": [
     1.4728,
     1.2731,
     1.1438,
@@ -45,18 +59,63 @@
     0.3998,
     0.3971
   ],
-  "epochs_run": 20,
-  "training_time_seconds": 551.2,
-  "config": {
+  "optimized_accuracy": 0.9011,
+  "optimized_f1": 0.9004,
+  "optimized_train_loss": [
+    1.7462,
+    1.3284,
+    1.1081,
+    0.9664,
+    0.8627,
+    0.7805,
+    0.7131,
+    0.6516,
+    0.5941,
+    0.5456,
+    0.504,
+    0.4618,
+    0.4179,
+    0.383,
+    0.3443,
+    0.3153,
+    0.2839,
+    0.2591,
+    0.2511,
+    0.2359
+  ],
+  "optimized_val_loss": [
+    1.3531,
+    1.1487,
+    1.0056,
+    0.7762,
+    0.7486,
+    0.6207,
+    0.5794,
+    0.5332,
+    0.4849,
+    0.4878,
+    0.4353,
+    0.3778,
+    0.3778,
+    0.3534,
+    0.3371,
+    0.3281,
+    0.3127,
+    0.3041,
+    0.3078,
+    0.3047
+  ],
+  "optimized_config": {
     "dataset": "cifar10",
-    "lr": 0.0005,
-    "num_filters": 64,
-    "num_layers": 3,
-    "dropout": 0.5,
-    "batch_size": 64,
+    "lr": 0.0003,
+    "num_filters": 96,
+    "num_layers": 4,
+    "dropout": 0.3,
+    "batch_size": 32,
     "epochs": 20,
     "num_classes": 10,
     "input_channels": 3,
     "weight_decay": 0.0001
-  }
+  },
+  "optimized_time_s": 778.5
 }

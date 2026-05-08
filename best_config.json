@@ -1,22 +1,12 @@
 {
-  "best_config": {
-    "lr": 0.0003,
-    "num_filters": 96,
-    "num_layers": 4,
-    "dropout": 0.3,
-    "batch_size": 32,
-    "epochs": 15
-  },
-  "best_val_accuracy_during_search": 0.7338,
-  "search_epochs_used": 5,
-  "full_train_epochs": 15,
-  "ga_params": {
-    "population_size": 20,
-    "n_generations": 10,
-    "crossover_prob": 0.7,
-    "mutation_prob": 0.4,
-    "gene_mutpb": 0.35,
-    "elite_size": 1,
-    "seed": 42
-  }
+  "dataset": "cifar10",
+  "lr": 0.0003,
+  "num_filters": 96,
+  "num_layers": 4,
+  "dropout": 0.3,
+  "batch_size": 32,
+  "epochs": 20,
+  "num_classes": 10,
+  "input_channels": 3,
+  "weight_decay": 1e-4
 }
