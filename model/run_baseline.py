@@ -7,7 +7,7 @@ from model.train import train
 # These are the fixed defaults — NOT optimised by GA
 BASELINE_CONFIG = {
     "dataset":        "cifar10",  
-    "lr":             0.0005,
+    "lr":             0.0003,
     "num_filters":    96,
     "num_layers":     4,
     "dropout":        0.5,
