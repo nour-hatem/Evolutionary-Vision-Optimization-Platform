@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  api:
+    image: mahmoud2608/cifar-api:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:V3lvet%23T0rnado@clouddb.c1yu626sut0q.eu-north-1.rds.amazonaws.com:5432/postgres
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  ui:
+    image: mahmoud2608/cifar-ui:latest
+    build:
+      context: ./ui/dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api:8000
+    depends_on:
+      - api
+    restart: unless-stopped
