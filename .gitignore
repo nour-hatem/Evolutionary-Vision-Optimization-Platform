@@ -216,3 +216,24 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Environment / Secrets (NEVER commit real credentials)
+.env
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_rsa.pub
+id_ed25519
+
+# ML model checkpoints (large binary files)
+model/checkpoints/*.pth
+optimized_model.pth
+best_model.pth
+*.pth
+
+# Generated data / build artifacts
+ga_checkpoint.json
+__pycache__/
+*.pyc

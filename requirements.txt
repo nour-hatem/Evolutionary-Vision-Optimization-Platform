@@ -9,3 +9,7 @@ torchvision>=0.17.0
 
 # Image processing
 Pillow>=10.3.0
+
+# Database / MLOps experiment tracking (AWS RDS PostgreSQL)
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0

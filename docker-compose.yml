@@ -2,14 +2,16 @@ version: "3.8"
 
 services:
   api:
-    image: mahmoud2608/cifar-api:latest
+    image: cifar-api:latest
     build:
       context: .
       dockerfile: docker/Dockerfile
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     environment:
-      - DATABASE_URL=postgresql://postgres:V3lvet%23T0rnado@clouddb.c1yu626sut0q.eu-north-1.rds.amazonaws.com:5432/postgres
+      - DATABASE_URL=${DATABASE_URL}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
@@ -18,7 +20,7 @@ services:
       retries: 3
 
   ui:
-    image: mahmoud2608/cifar-ui:latest
+    image: cifar-ui:latest
     build:
       context: ./ui/dashboard
       dockerfile: Dockerfile
@@ -29,3 +31,8 @@ services:
     depends_on:
       - api
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

@@ -27,7 +27,7 @@ class TransformSubset(torch.utils.data.Dataset):
         return len(self.subset)
 
 
-def get_loaders(batch_size: int):
+def get_loaders(dataset: str = "cifar10", batch_size: int = 64):
     train_transform, test_transform = get_transforms()
     pin_memory = torch.cuda.is_available()
     num_workers = min(2, os.cpu_count() or 1)
