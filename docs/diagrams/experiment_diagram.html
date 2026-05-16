@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Experiment Execution Diagram — Vision Evolution Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2236;--border:#1e293b;--accent:#6366f1;--accent2:#818cf8;--accent3:#a78bfa;--green:#22c55e;--green-bg:rgba(34,197,94,.08);--yellow:#eab308;--yellow-bg:rgba(234,179,8,.08);--red:#ef4444;--red-bg:rgba(239,68,68,.08);--blue:#3b82f6;--cyan:#06b6d4;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+
+/* Hero */
+.hero{padding:60px 20px 40px;text-align:center;background:linear-gradient(135deg,#0f172a,#1e1b4b,#0f172a);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(99,102,241,.06),transparent 70%)}
+.hero-badge{display:inline-block;padding:5px 14px;border-radius:20px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);color:var(--accent2);font-size:.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;background:linear-gradient(135deg,#e2e8f0,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.hero p{color:var(--text2);font-size:1rem;max-width:550px;margin:0 auto}
+.container{max-width:1000px;margin:0 auto;padding:0 20px}
+section{padding:50px 0}
+.section-title{font-size:1.4rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.section-title .num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent3));color:#fff;font-size:.8rem;font-weight:700}
+.section-sub{color:var(--text2);margin-bottom:28px;font-size:.9rem}
+
+/* Flow Diagram */
+.diagram{position:relative;padding:40px 0}
+.flow-line{position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent3),var(--green));transform:translateX(-50%);border-radius:2px}
+.step{position:relative;display:flex;align-items:flex-start;margin-bottom:24px}
+.step:last-child{margin-bottom:0}
+.step-left{flex:1;text-align:right;padding-right:40px}
+.step-right{flex:1;padding-left:40px}
+.step-dot{position:absolute;left:50%;top:8px;width:20px;height:20px;border-radius:50%;transform:translateX(-50%);z-index:2;border:3px solid var(--bg);box-shadow:0 0 0 2px var(--accent),0 0 20px rgba(99,102,241,.3)}
+.step-dot.purple{background:var(--accent)}
+.step-dot.blue{background:var(--blue)}
+.step-dot.yellow{background:var(--yellow);box-shadow:0 0 0 2px var(--yellow),0 0 20px rgba(234,179,8,.3)}
+.step-dot.red{background:var(--red);box-shadow:0 0 0 2px var(--red),0 0 20px rgba(239,68,68,.3)}
+.step-dot.green{background:var(--green);box-shadow:0 0 0 2px var(--green),0 0 20px rgba(34,197,94,.3)}
+.step-dot.cyan{background:var(--cyan);box-shadow:0 0 0 2px var(--cyan),0 0 20px rgba(6,182,212,.3)}
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:inline-block;max-width:360px;transition:transform .2s,border-color .2s}
+.step-card:hover{transform:translateY(-2px);border-color:rgba(99,102,241,.3)}
+.step-card.highlight-green{border-color:rgba(34,197,94,.3);background:linear-gradient(135deg,var(--surface),rgba(34,197,94,.03))}
+.step-card.highlight-red{border-color:rgba(239,68,68,.3);background:linear-gradient(135deg,var(--surface),rgba(239,68,68,.03))}
+.step-card.highlight-yellow{border-color:rgba(234,179,8,.3);background:linear-gradient(135deg,var(--surface),rgba(234,179,8,.03))}
+.step-card.highlight-blue{border-color:rgba(59,130,246,.3);background:linear-gradient(135deg,var(--surface),rgba(59,130,246,.03))}
+.step-card h4{font-size:.9rem;font-weight:700;margin-bottom:4px}
+.step-card p{font-size:.78rem;color:var(--text2);margin:0}
+.step-card code{font-size:.7rem;background:var(--surface2);padding:2px 6px;border-radius:4px;color:var(--accent2)}
+.step-label{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:4px}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.65rem;font-weight:600}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-red{background:var(--red-bg);color:var(--red)}
+.badge-yellow{background:var(--yellow-bg);color:var(--yellow)}
+.badge-blue{background:rgba(59,130,246,.1);color:var(--blue)}
+
+/* Architecture Diagram */
+.arch{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:12px;padding:30px;background:var(--surface);border:1px solid var(--border);border-radius:16px;margin:20px 0}
+.arch-box{padding:20px;border-radius:12px;text-align:center;border:1px solid var(--border);min-height:120px;display:flex;flex-direction:column;justify-content:center}
+.arch-box.api{background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(99,102,241,.02));border-color:rgba(99,102,241,.2)}
+.arch-box.db{background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.02));border-color:rgba(34,197,94,.2)}
+.arch-box.ui{background:linear-gradient(135deg,rgba(6,182,212,.08),rgba(6,182,212,.02));border-color:rgba(6,182,212,.2)}
+.arch-box h4{font-size:.85rem;font-weight:700;margin-bottom:6px}
+.arch-box p{font-size:.72rem;color:var(--text2)}
+.arch-arrow{color:var(--text3);font-size:1.4rem;text-align:center}
+.arch-arrow small{display:block;font-size:.6rem;color:var(--text3)}
+
+/* Data Flow Cards */
+.data-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:20px 0}
+.data-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center}
+.data-card .icon{font-size:1.6rem;margin-bottom:8px}
+.data-card h4{font-size:.85rem;font-weight:600;margin-bottom:4px}
+.data-card p{font-size:.72rem;color:var(--text2)}
+
+/* Resume Demo */
+.demo-flow{display:flex;align-items:stretch;gap:0;margin:20px 0;overflow-x:auto}
+.demo-step{flex:1;min-width:140px;padding:16px 12px;text-align:center;position:relative;border:1px solid var(--border);background:var(--surface)}
+.demo-step:first-child{border-radius:12px 0 0 12px}
+.demo-step:last-child{border-radius:0 12px 12px 0}
+.demo-step .demo-num{font-size:.6rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.demo-step h5{font-size:.8rem;font-weight:700;margin-bottom:4px}
+.demo-step p{font-size:.68rem;color:var(--text2)}
+.demo-step.active{border-color:var(--accent);background:rgba(99,102,241,.05)}
+.demo-step.danger{border-color:var(--red);background:rgba(239,68,68,.04)}
+.demo-step.success{border-color:var(--green);background:rgba(34,197,94,.04)}
+.demo-step::after{content:'→';position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:1rem;z-index:1}
+.demo-step:last-child::after{display:none}
+
+.footer{text-align:center;padding:30px 20px;color:var(--text3);font-size:.75rem;border-top:1px solid var(--border)}
+@media(max-width:700px){.step{flex-direction:column;text-align:left}.step-left,.step-right{text-align:left;padding:8px 0 8px 50px}.flow-line{left:20px}.step-dot{left:20px}.arch{grid-template-columns:1fr;gap:8px}.arch-arrow{transform:rotate(90deg)}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">MLOps · Experiment Tracking · AWS RDS</div>
+  <h1>Experiment Execution Diagram</h1>
+  <p>Submission → Run → Checkpoint → Result Collection with Spot instance resilience</p>
+</div>
+
+<div class="container">
+
+<!-- Section 1: Architecture -->
+<section>
+  <h2 class="section-title"><span class="num">1</span>System Architecture</h2>
+  <p class="section-sub">How components interact during experiment execution</p>
+
+  <div class="arch">
+    <div class="arch-box ui">
+      <h4>🖥️ Streamlit UI</h4>
+      <p>Dashboard & Monitoring<br>Port 8501</p>
+    </div>
+    <div class="arch-arrow">→<small>HTTP</small></div>
+    <div class="arch-box api">
+      <h4>⚡ FastAPI</h4>
+      <p>Inference + MLOps API<br>Port 8000</p>
+    </div>
+    <div class="arch-arrow">→<small>SQLAlchemy</small></div>
+    <div class="arch-box db">
+      <h4>🗄️ AWS RDS</h4>
+      <p>PostgreSQL<br>Experiments · Logs · Checkpoints</p>
+    </div>
+  </div>
+
+  <div class="data-grid">
+    <div class="data-card">
+      <div class="icon">📋</div>
+      <h4>experiments</h4>
+      <p>run_name, config, status, start/end time</p>
+    </div>
+    <div class="data-card">
+      <div class="icon">📈</div>
+      <h4>run_logs</h4>
+      <p>generation, accuracy, f1_score per step</p>
+    </div>
+    <div class="data-card">
+      <div class="icon">💾</div>
+      <h4>checkpoints</h4>
+      <p>GA population state (JSON), generation</p>
+    </div>
+    <div class="data-card">
+      <div class="icon">🔮</div>
+      <h4>prediction_logs</h4>
+      <p>filename, class, confidence, timestamp</p>
+    </div>
+  </div>
+</section>
+
+<!-- Section 2: Normal Execution Flow -->
+<section>
+  <h2 class="section-title"><span class="num">2</span>Normal Execution Flow</h2>
+  <p class="section-sub">Happy path: experiment runs to completion with checkpointing at every generation</p>
+
+  <div class="diagram">
+    <div class="flow-line"></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-card highlight-blue">
+          <div class="step-label">API Endpoint</div>
+          <h4>📤 Experiment Submitted</h4>
+          <p>User calls <code>POST /start_experiment</code> with config (run_name, generations, mutation_rate, etc.)</p>
+        </div>
+      </div>
+      <div class="step-dot purple"></div>
+      <div class="step-right"></div>
+    </div>
+
+    <div class="step">
+      <div class="step-left"></div>
+      <div class="step-dot blue"></div>
+      <div class="step-right">
+        <div class="step-card">
+          <div class="step-label">Database</div>
+          <h4>📝 Experiment Created in RDS</h4>
+          <p>New row in <code>experiments</code> table, status = <span class="badge badge-yellow">running</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-card">
+          <div class="step-label">Checkpoint Check</div>
+          <h4>🔍 Load Existing Checkpoint</h4>
+          <p>Query <code>checkpoints</code> table. If found → resume. If not → start fresh from Gen 0</p>
+        </div>
+      </div>
+      <div class="step-dot cyan"></div>
+      <div class="step-right"></div>
+    </div>
+
+    <div class="step">
+      <div class="step-left"></div>
+      <div class="step-dot blue"></div>
+      <div class="step-right">
+        <div class="step-card highlight-blue">
+          <div class="step-label">Training Loop</div>
+          <h4>🧬 GA Evolution — Generation N</h4>
+          <p>Run selection, crossover, mutation. Evaluate fitness (accuracy, F1)</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-card">
+          <div class="step-label">Logging</div>
+          <h4>📊 Log Metrics to RDS</h4>
+          <p>Insert into <code>run_logs</code>: generation, accuracy, f1_score, timestamp</p>
+        </div>
+      </div>
+      <div class="step-dot purple"></div>
+      <div class="step-right"></div>
+    </div>
+
+    <div class="step">
+      <div class="step-left"></div>
+      <div class="step-dot yellow"></div>
+      <div class="step-right">
+        <div class="step-card highlight-yellow">
+          <div class="step-label">Checkpoint</div>
+          <h4>💾 Save Checkpoint to RDS</h4>
+          <p>Save full GA state (population, best fitness) to <code>checkpoints</code> table. Repeat for each generation ↩</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-card highlight-green">
+          <div class="step-label">Completion</div>
+          <h4>✅ Experiment Completed</h4>
+          <p>Status updated to <span class="badge badge-green">completed</span>. Runtime calculated. Results in RDS</p>
+        </div>
+      </div>
+      <div class="step-dot green"></div>
+      <div class="step-right"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3: Interruption & Recovery -->
+<section>
+  <h2 class="section-title"><span class="num">3</span>Spot Interruption & Recovery</h2>
+  <p class="section-sub">When AWS reclaims a Spot instance, the experiment resumes from the last checkpoint</p>
+
+  <div class="demo-flow">
+    <div class="demo-step active">
+      <div class="demo-num">Phase 1</div>
+      <h5>▶ Start</h5>
+      <p>Submit experiment<br>6 generations</p>
+    </div>
+    <div class="demo-step active">
+      <div class="demo-num">Phase 2</div>
+      <h5>🧬 Gen 0-2</h5>
+      <p>Run + checkpoint<br>each generation</p>
+    </div>
+    <div class="demo-step danger">
+      <div class="demo-num">Phase 3</div>
+      <h5>⚠ Interrupted</h5>
+      <p>Spot reclaimed<br>Status → interrupted</p>
+    </div>
+    <div class="demo-step" style="border-color:var(--cyan);background:rgba(6,182,212,.04)">
+      <div class="demo-num">Phase 4</div>
+      <h5>💾 Checkpoint</h5>
+      <p>Gen 2 state saved<br>in RDS (survives!)</p>
+    </div>
+    <div class="demo-step success">
+      <div class="demo-num">Phase 5</div>
+      <h5>🔄 Resume</h5>
+      <p>Load checkpoint<br>Continue Gen 3-5</p>
+    </div>
+    <div class="demo-step success">
+      <div class="demo-num">Phase 6</div>
+      <h5>✅ Complete</h5>
+      <p>All 6 generations<br>Results in RDS</p>
+    </div>
+  </div>
+
+  <div class="diagram" style="margin-top:30px">
+    <div class="flow-line" style="background:linear-gradient(180deg,var(--accent),var(--red),var(--yellow),var(--green))"></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-card highlight-blue">
+          <h4>▶ Experiment Starts</h4>
+          <p>6 generations requested. Fresh start, no checkpoint found</p>
+        </div>
+      </div>
+      <div class="step-dot purple"></div>
+      <div class="step-right"></div>
+    </div>
+
+    <div class="step">
+      <div class="step-left"></div>
+      <div class="step-dot blue"></div>
+      <div class="step-right">
+        <div class="step-card">
+          <h4>🧬 Gen 0 → accuracy: 0.850</h4>
+          <p>Logged to <code>run_logs</code> + checkpoint saved ✓</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-card">
+          <h4>🧬 Gen 1 → accuracy: 0.862</h4>
+          <p>Logged to <code>run_logs</code> + checkpoint updated ✓</p>
+        </div>
+      </div>
+      <div class="step-dot blue"></div>
+      <div class="step-right"></div>
+    </div>
+
+    <div class="step">
+      <div class="step-left"></div>
+      <div class="step-dot yellow"></div>
+      <div class="step-right">
+        <div class="step-card highlight-yellow">
+          <h4>🧬 Gen 2 → accuracy: 0.874</h4>
+          <p>Last successful generation. Checkpoint saved to RDS with full GA population state ✓</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-card highlight-red">
+          <h4>⚠ SPOT INTERRUPTED</h4>
+          <p>AWS reclaims instance. Status → <span class="badge badge-red">interrupted</span><br>Data safe in RDS (external DB, not on instance)</p>
+        </div>
+      </div>
+      <div class="step-dot red"></div>
+      <div class="step-right"></div>
+    </div>
+
+    <div class="step">
+      <div class="step-left"></div>
+      <div class="step-dot cyan"></div>
+      <div class="step-right">
+        <div class="step-card" style="border-color:rgba(6,182,212,.3)">
+          <h4>🔄 Resume Called</h4>
+          <p><code>POST /resume_experiment</code><br>Loads checkpoint from RDS → Gen 2 state recovered</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-card highlight-green">
+          <h4>🧬 Gen 3-5 → accuracy: 0.886–0.910</h4>
+          <p>Training continues from checkpoint. Each generation logged + checkpointed</p>
+        </div>
+      </div>
+      <div class="step-dot green"></div>
+      <div class="step-right"></div>
+    </div>
+
+    <div class="step">
+      <div class="step-left"></div>
+      <div class="step-dot green"></div>
+      <div class="step-right">
+        <div class="step-card highlight-green">
+          <h4>✅ Experiment Completed</h4>
+          <p>All 6 generations done. Status → <span class="badge badge-green">completed</span><br>Zero data lost despite interruption</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 4: Key Design Decisions -->
+<section>
+  <h2 class="section-title"><span class="num">4</span>Key Design Decisions</h2>
+  <p class="section-sub">Why this architecture supports cost-effective, resilient ML experimentation</p>
+
+  <div class="data-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+    <div class="data-card" style="text-align:left;border-color:rgba(99,102,241,.15)">
+      <h4 style="margin-bottom:8px">💾 External Checkpoints (RDS)</h4>
+      <p>Checkpoints stored in AWS RDS, not local disk. If the instance dies, all state survives. This is what enables Spot instance usage.</p>
+    </div>
+    <div class="data-card" style="text-align:left;border-color:rgba(34,197,94,.15)">
+      <h4 style="margin-bottom:8px">🔄 Per-Generation Saves</h4>
+      <p>Checkpoint after every generation ensures maximum 1 generation of lost work. Acceptable trade-off for 70% cost savings on Spot.</p>
+    </div>
+    <div class="data-card" style="text-align:left;border-color:rgba(234,179,8,.15)">
+      <h4 style="margin-bottom:8px">📊 Structured Logging</h4>
+      <p>Metrics logged to normalized SQL tables (not flat files). Enables queries, dashboards, and cross-experiment comparison at scale.</p>
+    </div>
+    <div class="data-card" style="text-align:left;border-color:rgba(6,182,212,.15)">
+      <h4 style="margin-bottom:8px">🔌 API-Driven Workflow</h4>
+      <p>All operations via REST API. Experiments can be submitted from UI, CLI, or CI/CD pipelines. Fully automatable.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  Vision Feature Selection / Neural Evolution Platform · Experiment Execution Architecture · AWS EU-North-1
+</div>
+
+</body>
+</html>

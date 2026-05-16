@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cost Analysis — Vision Evolution Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --bg: #0a0e1a;
+      --surface: #111827;
+      --surface2: #1a2236;
+      --border: #1e293b;
+      --accent: #6366f1;
+      --accent2: #818cf8;
+      --accent3: #a78bfa;
+      --green: #22c55e;
+      --green-bg: rgba(34, 197, 94, .1);
+      --yellow: #eab308;
+      --yellow-bg: rgba(234, 179, 8, .1);
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --cyan: #06b6d4;
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --text3: #64748b
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden
+    }
+
+    .hero {
+      position: relative;
+      padding: 80px 20px 60px;
+      text-align: center;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+      overflow: hidden
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(99, 102, 241, .08) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(167, 139, 250, .06) 0%, transparent 50%);
+      animation: drift 20s ease-in-out infinite
+    }
+
+    @keyframes drift {
+
+      0%,
+      100% {
+        transform: translate(0, 0)
+      }
+
+      50% {
+        transform: translate(-2%, 1%)
+      }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      background: rgba(99, 102, 241, .15);
+      border: 1px solid rgba(99, 102, 241, .3);
+      color: var(--accent2);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 20px
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #e2e8f0, #818cf8, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px
+    }
+
+    .hero p {
+      color: var(--text2);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px
+    }
+
+    section {
+      padding: 60px 0
+    }
+
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .section-title .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent3));
+      color: #fff;
+      font-size: .85rem;
+      font-weight: 700
+    }
+
+    .section-sub {
+      color: var(--text2);
+      margin-bottom: 32px;
+      font-size: .95rem
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 20px;
+      transition: transform .2s, border-color .2s
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(99, 102, 241, .3)
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--accent2)
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .88rem
+    }
+
+    th {
+      text-align: left;
+      padding: 10px 14px;
+      background: var(--surface2);
+      color: var(--text2);
+      font-weight: 600;
+      font-size: .75rem;
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    th:first-child {
+      border-radius: 8px 0 0 8px
+    }
+
+    th:last-child {
+      border-radius: 0 8px 8px 0
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text)
+    }
+
+    tr:last-child td {
+      border-bottom: none
+    }
+
+    .highlight {
+      color: var(--green);
+      font-weight: 600
+    }
+
+    .warn {
+      color: var(--yellow);
+      font-weight: 600
+    }
+
+    .cost {
+      font-family: 'Inter', monospace;
+      font-weight: 600
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: .72rem;
+      font-weight: 600
+    }
+
+    .badge-green {
+      background: var(--green-bg);
+      color: var(--green)
+    }
+
+    .badge-yellow {
+      background: var(--yellow-bg);
+      color: var(--yellow)
+    }
+
+    .badge-red {
+      background: rgba(239, 68, 68, .1);
+      color: var(--red)
+    }
+
+    .badge-blue {
+      background: rgba(59, 130, 246, .1);
+      color: var(--blue)
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent3))
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent2), var(--accent3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 8px 0
+    }
+
+    .stat-label {
+      color: var(--text2);
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600
+    }
+
+    .stat-detail {
+      color: var(--text3);
+      font-size: .78rem;
+      margin-top: 4px
+    }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 30px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin: 20px 0
+    }
+
+    .flow-box {
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      font-size: .82rem;
+      font-weight: 500;
+      text-align: center;
+      min-width: 120px
+    }
+
+    .flow-box.active {
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, .1);
+      color: var(--accent2)
+    }
+
+    .flow-box.danger {
+      border-color: var(--red);
+      background: rgba(239, 68, 68, .08);
+      color: var(--red)
+    }
+
+    .flow-box.success {
+      border-color: var(--green);
+      background: rgba(34, 197, 94, .08);
+      color: var(--green)
+    }
+
+    .flow-arrow {
+      color: var(--text3);
+      font-size: 1.2rem
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 20px 0
+    }
+
+    .compare-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      position: relative
+    }
+
+    .compare-card.recommended {
+      border-color: var(--green);
+      box-shadow: 0 0 30px rgba(34, 197, 94, .08)
+    }
+
+    .compare-card.recommended::after {
+      content: 'RECOMMENDED';
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--green-bg);
+      color: var(--green);
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .5px
+    }
+
+    .compare-card h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 4px
+    }
+
+    .compare-card .price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent2);
+      margin: 10px 0
+    }
+
+    .compare-card .price span {
+      font-size: .8rem;
+      color: var(--text3);
+      font-weight: 400
+    }
+
+    .compare-card ul {
+      list-style: none;
+      margin-top: 14px
+    }
+
+    .compare-card ul li {
+      padding: 5px 0;
+      font-size: .82rem;
+      color: var(--text2)
+    }
+
+    .compare-card ul li::before {
+      content: '✓';
+      color: var(--green);
+      margin-right: 8px;
+      font-weight: 700
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 10px 0
+    }
+
+    .rationale {
+      background: linear-gradient(135deg, rgba(99, 102, 241, .05), rgba(167, 139, 250, .05));
+      border: 1px solid rgba(99, 102, 241, .15);
+      border-radius: 16px;
+      padding: 32px;
+      margin: 20px 0
+    }
+
+    .rationale h3 {
+      color: var(--accent2);
+      font-size: 1.1rem;
+      margin-bottom: 16px
+    }
+
+    .rationale ul {
+      list-style: none
+    }
+
+    .rationale ul li {
+      padding: 8px 0;
+      color: var(--text2);
+      font-size: .9rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px
+    }
+
+    .rationale ul li::before {
+      content: '→';
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0
+    }
+
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text3);
+      font-size: .8rem;
+      border-top: 1px solid var(--border)
+    }
+
+    @media(max-width:640px) {
+
+      .grid,
+      .compare-grid {
+        grid-template-columns: 1fr
+      }
+
+      .flow {
+        flex-direction: column
+      }
+
+      .flow-arrow {
+        transform: rotate(90deg)
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="hero">
+    <div class="hero-badge">Cloud Computing · AWS · MLOps</div>
+    <h1>Cost Analysis & Execution Strategy</h1>
+    <p>Vision Feature Selection / Neural Evolution Platform — Managed experiment runner with checkpointing and
+      batch/spot execution analysis</p>
+  </div>
+
+  <div class="container">
+
+    <!-- Stats Overview -->
+    <section>
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+        <div class="stat-card">
+          <div class="stat-label">Current Monthly</div>
+          <div class="stat-value">$24.27</div>
+          <div class="stat-detail">EC2 + RDS On-Demand</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Optimized Monthly</div>
+          <div class="stat-value">$17.46</div>
+          <div class="stat-detail">Hybrid + Fargate Spot</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Potential Savings</div>
+          <div class="stat-value">28%</div>
+          <div class="stat-detail">With spot & pay-per-job</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Spot Discount</div>
+          <div class="stat-value">70%</div>
+          <div class="stat-detail">vs On-Demand compute</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 1 -->
+    <section>
+      <h2 class="section-title"><span class="num">1</span>Current Deployment Architecture</h2>
+      <p class="section-sub">Our platform runs on AWS EU-North-1 (Stockholm) with containerized microservices</p>
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Service</th>
+              <th>Instance</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Inference API</strong></td>
+              <td>EC2</td>
+              <td><code>t3.micro</code> (1 vCPU, 1 GB)</td>
+              <td>FastAPI serving CNN predictions</td>
+            </tr>
+            <tr>
+              <td><strong>UI Dashboard</strong></td>
+              <td>EC2</td>
+              <td>Same instance (Docker)</td>
+              <td>Streamlit monitoring dashboard</td>
+            </tr>
+            <tr>
+              <td><strong>Database</strong></td>
+              <td>RDS PostgreSQL</td>
+              <td><code>db.t3.micro</code></td>
+              <td>Experiment logs, checkpoints, predictions</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section>
+      <h2 class="section-title"><span class="num">2</span>Cost Breakdown — Current Setup</h2>
+      <p class="section-sub">On-Demand pricing for always-on services in eu-north-1</p>
+      <div class="grid">
+        <div class="card">
+          <h3>EC2 Compute (t3.micro)</h3>
+          <table>
+            <tr>
+              <td>Hourly rate</td>
+              <td class="cost">$0.0104/hr</td>
+            </tr>
+            <tr>
+              <td>Daily cost</td>
+              <td class="cost">$0.25/day</td>
+            </tr>
+            <tr>
+              <td>Monthly (24/7)</td>
+              <td class="cost highlight">$7.59/month</td>
+            </tr>
+            <tr>
+              <td>Annual cost</td>
+              <td class="cost">$91.10/year</td>
+            </tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3>RDS PostgreSQL (db.t3.micro)</h3>
+          <table>
+            <tr>
+              <td>Hourly rate</td>
+              <td class="cost">~$0.018/hr</td>
+            </tr>
+            <tr>
+              <td>Monthly compute</td>
+              <td class="cost">~$13.14/month</td>
+            </tr>
+            <tr>
+              <td>Storage (20 GB gp2)</td>
+              <td class="cost">~$2.54/month</td>
+            </tr>
+            <tr>
+              <td><strong>Total RDS</strong></td>
+              <td class="cost highlight">~$15.68/month</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="card" style="text-align:center;margin-top:10px">
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Monthly Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>EC2 (t3.micro, 24/7)</td>
+              <td class="cost">$7.59</td>
+            </tr>
+            <tr>
+              <td>RDS (db.t3.micro, 24/7)</td>
+              <td class="cost">$15.68</td>
+            </tr>
+            <tr>
+              <td>Data transfer</td>
+              <td class="cost">~$1.00</td>
+            </tr>
+            <tr>
+              <td><strong>Total Monthly</strong></td>
+              <td class="cost" style="color:var(--accent2);font-size:1.1rem"><strong>~$24.27</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 3 -->
+    <section>
+      <h2 class="section-title"><span class="num">3</span>Alternative Execution Strategies</h2>
+      <p class="section-sub">Comparing On-Demand, Spot, and Fargate for ML experiment workloads</p>
+
+      <div class="card">
+        <h3>Strategy A: EC2 Spot Instances</h3>
+        <p style="color:var(--text2);font-size:.88rem;margin-bottom:16px">Use AWS spare capacity at steep discounts —
+          can be interrupted with 2-minute notice</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>On-Demand</th>
+              <th>Spot</th>
+              <th>Savings</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Hourly rate</td>
+              <td class="cost">$0.0104/hr</td>
+              <td class="cost">~$0.0031/hr</td>
+              <td><span class="badge badge-green">70% off</span></td>
+            </tr>
+            <tr>
+              <td>Monthly cost</td>
+              <td class="cost">$7.59</td>
+              <td class="cost highlight">~$2.26</td>
+              <td class="cost highlight">$5.33 saved</td>
+            </tr>
+            <tr>
+              <td>Interruption risk</td>
+              <td>None</td>
+              <td class="warn">2-min warning</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Best for</td>
+              <td>Production API</td>
+              <td>Batch training</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Strategy B: AWS Batch + Fargate</h3>
+        <p style="color:var(--text2);font-size:.88rem;margin-bottom:16px">Serverless containers — no instance
+          management, pay only for job duration</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>EC2 On-Demand</th>
+              <th>Fargate</th>
+              <th>Fargate Spot</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>vCPU cost</td>
+              <td class="cost">$0.0104/hr</td>
+              <td class="cost">~$0.0466/hr</td>
+              <td class="cost">~$0.0140/hr</td>
+            </tr>
+            <tr>
+              <td>Memory cost</td>
+              <td>(included)</td>
+              <td class="cost">~$0.0051/GB/hr</td>
+              <td class="cost">~$0.0015/GB/hr</td>
+            </tr>
+            <tr>
+              <td>1 vCPU + 1 GB, 1 hr</td>
+              <td class="cost">$0.0104</td>
+              <td class="cost">~$0.0517</td>
+              <td class="cost">~$0.0155</td>
+            </tr>
+            <tr>
+              <td>Management</td>
+              <td><span class="badge badge-yellow">Manual</span></td>
+              <td><span class="badge badge-green">Serverless</span></td>
+              <td><span class="badge badge-green">Serverless</span></td>
+            </tr>
+            <tr>
+              <td>Scaling</td>
+              <td><span class="badge badge-yellow">Manual</span></td>
+              <td><span class="badge badge-green">Auto</span></td>
+              <td><span class="badge badge-green">Auto</span></td>
+            </tr>
+            <tr>
+              <td>Pay when idle</td>
+              <td><span class="badge badge-red">Always paying</span></td>
+              <td><span class="badge badge-green">Per job only</span></td>
+              <td><span class="badge badge-green">Per job only</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Strategy C: Hybrid Approach</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Workload</th>
+              <th>Strategy</th>
+              <th>Rationale</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Inference API + UI</strong></td>
+              <td>EC2 On-Demand</td>
+              <td>Must be always available, low cost at $7.59/mo</td>
+            </tr>
+            <tr>
+              <td><strong>GA Experiments (short)</strong></td>
+              <td>Batch + Fargate Spot</td>
+              <td>Pay only during execution, ~70% cheaper</td>
+            </tr>
+            <tr>
+              <td><strong>GA Experiments (long)</strong></td>
+              <td>EC2 Spot + Checkpoints</td>
+              <td>Cheapest for multi-hour runs, resume on interruption</td>
+            </tr>
+            <tr>
+              <td><strong>Database</strong></td>
+              <td>RDS (always-on)</td>
+              <td>Persistent storage for all experiment data</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 4 -->
+    <section>
+      <h2 class="section-title"><span class="num">4</span>Cost Comparison — Monthly Scenarios</h2>
+      <p class="section-sub">Real-world usage patterns and their cost implications</p>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Light Usage <span class="badge badge-blue" style="margin-left:8px">5 exp/month · ~10 min each</span></h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Strategy</th>
+                <th>Total/Month</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>EC2 On-Demand 24/7</td>
+                <td class="cost">$24.27</td>
+              </tr>
+              <tr>
+                <td>Fargate On-Demand</td>
+                <td class="cost">$16.72</td>
+              </tr>
+              <tr>
+                <td>Fargate Spot</td>
+                <td class="cost highlight">$16.69</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="margin-top:12px;color:var(--green);font-size:.82rem;font-weight:600">→ 31% savings with Fargate</p>
+        </div>
+        <div class="card">
+          <h3>Heavy Usage <span class="badge badge-blue" style="margin-left:8px">50 exp/month · ~1 hr each</span></h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Strategy</th>
+                <th>Total/Month</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>EC2 On-Demand 24/7</td>
+                <td class="cost">$24.27</td>
+              </tr>
+              <tr>
+                <td>EC2 Spot (dedicated)</td>
+                <td class="cost">$19.49</td>
+              </tr>
+              <tr>
+                <td>Fargate On-Demand</td>
+                <td class="cost">$19.27</td>
+              </tr>
+              <tr>
+                <td>Fargate Spot</td>
+                <td class="cost highlight">$17.46</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="margin-top:12px;color:var(--green);font-size:.82rem;font-weight:600">→ 28% savings with Fargate Spot
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5 -->
+    <section>
+      <h2 class="section-title"><span class="num">5</span>Why Checkpointing Enables Cost Optimization</h2>
+      <p class="section-sub">Our checkpoint system is the key enabler for Spot/Fargate Spot execution</p>
+
+      <div class="flow">
+        <div class="flow-box active">Start Experiment<br><small style="color:var(--text3)">/start_experiment</small>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Gen 0..N<br><small style="color:var(--text3)">Log + Checkpoint</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box danger">⚠ INTERRUPTED<br><small>Spot reclaim</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box success">Resume from<br><small>Checkpoint Gen N+1</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box success">✓ Complete<br><small>DB updated</small></div>
+      </div>
+
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Implementation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Checkpoint storage</strong></td>
+              <td>AWS RDS <code>checkpoints</code> table — survives instance termination</td>
+            </tr>
+            <tr>
+              <td><strong>Checkpoint frequency</strong></td>
+              <td>Every generation</td>
+            </tr>
+            <tr>
+              <td><strong>Resume capability</strong></td>
+              <td><code>load_latest_checkpoint()</code> returns last saved generation + GA state</td>
+            </tr>
+            <tr>
+              <td><strong>Data durability</strong></td>
+              <td>All logs in RDS, not local disk — zero data loss on Spot interruption</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 6 -->
+    <section>
+      <h2 class="section-title"><span class="num">6</span>Rationale & Scaling Path</h2>
+      <p class="section-sub">Why we chose this architecture and when to upgrade</p>
+
+      <div class="rationale">
+        <h3>Why EC2 On-Demand (t3.micro)?</h3>
+        <ul>
+          <li><strong>Free Tier eligible</strong> — 750 hrs/month for 12 months, effectively free for development</li>
+          <li><strong>Simplicity</strong> — Single instance with Docker containers minimizes operational complexity</li>
+          <li><strong>Adequate for demo</strong> — Experiments are short (minutes), always-on cost is minimal</li>
+          <li><strong>Checkpoint-ready</strong> — Seamless migration to Spot/Fargate without code changes</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>When to Upgrade</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Trigger</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Experiments &gt; 1 hour each</td>
+              <td>Switch training to <span class="badge badge-green">EC2 Spot</span></td>
+            </tr>
+            <tr>
+              <td>Need parallel experiments</td>
+              <td>Use <span class="badge badge-blue">AWS Batch + Fargate</span></td>
+            </tr>
+            <tr>
+              <td>Production deployment</td>
+              <td>Add <span class="badge badge-yellow">Load Balancer + ASG</span></td>
+            </tr>
+            <tr>
+              <td>Budget constraint</td>
+              <td>Use <span class="badge badge-green">Fargate Spot (pay per job)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 7 -->
+    <section>
+      <h2 class="section-title"><span class="num">7</span>Summary</h2>
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h4>Current Setup</h4>
+          <div class="price">$24.27 <span>/month</span></div>
+          <div class="divider"></div>
+          <ul>
+            <li>EC2 On-Demand inference</li>
+            <li>Training on same instance</li>
+            <li>RDS On-Demand database</li>
+            <li>Manual scaling</li>
+            <li>Simple architecture</li>
+          </ul>
+        </div>
+        <div class="compare-card recommended">
+          <h4>Optimized (Future)</h4>
+          <div class="price" style="color:var(--green)">$17.46 <span>/month</span></div>
+          <div class="divider"></div>
+          <ul>
+            <li>EC2 On-Demand inference</li>
+            <li>Fargate Spot for training</li>
+            <li>RDS On-Demand database</li>
+            <li>Auto-scaling via Batch</li>
+            <li>Checkpoint resilience</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="footer">
+    <p>Vision Feature Selection / Neural Evolution Platform · AWS EU-North-1 (Stockholm) · Cost Analysis Report</p>
+  </div>
+
+</body>
+
+</html>

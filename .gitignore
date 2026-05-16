@@ -217,6 +217,12 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+# Documentation assets — explicitly tracked (not ignored)
+# docs/reports/*.html
+# docs/diagrams/*.html
+# docs/proposal/*.pdf
+# These are intentionally committed as project documentation.
+
 # Environment / Secrets (NEVER commit real credentials)
 .env
 *.pem
@@ -237,3 +243,8 @@ best_model.pth
 ga_checkpoint.json
 __pycache__/
 *.pyc
+
+# Docs assets — intentionally tracked (HTML reports, PDF proposal)
+# docs/reports/*.html  → NOT ignored (keep)
+# docs/diagrams/*.html → NOT ignored (keep)
+# docs/proposal/*.pdf  → NOT ignored (keep)
