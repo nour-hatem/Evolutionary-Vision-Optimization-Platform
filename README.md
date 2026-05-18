@@ -925,7 +925,7 @@ The following evaluation charts are pre-generated and available in the repositor
 | Confusion Matrix — Optimized | `Evaluation/Plots/04_confusion_matrix_optimized.png` | Per-class predictions for GA-optimized model |
 | Per-Class Accuracy | `Evaluation/Plots/05_per_class_accuracy.png` | Accuracy for all 10 CIFAR-10 classes |
 
-### Deployment Screenshots (Add Before Submission)
+### Deployment Screenshots 
 
 > *Capture these from the live AWS deployment and add to `screenshots/` folder.*
 
