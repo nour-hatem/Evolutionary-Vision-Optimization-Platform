@@ -45,7 +45,6 @@
 - [Screenshots](#screenshots)
 - [Cloud Computing Bonus](#cloud-computing-bonus)
 - [Future Improvements](#future-improvements)
-- [Contributors](#contributors)
 - [License](#license)
 
 ---
