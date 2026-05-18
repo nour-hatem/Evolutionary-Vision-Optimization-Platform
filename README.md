@@ -1037,21 +1037,7 @@ The 4-page Streamlit dashboard (`ui/dashboard/app.py`) provides full experiment 
 | Low | **Transfer learning** — add ResNet/EfficientNet backbone option to SimpleCNN | Potentially push accuracy above 95% |
 | Low | **Bayesian search comparison** — compare GA vs Optuna/Hyperopt on same search space | Validate GA as a competitive strategy |
 
----
 
-## Contributors
-
-| # | Name | ID | Role | Primary Modules |
-|---|------|-----|------|--------|
-| 1 | **Salma Mohamed Abdulaziz Amin** | 20230257 | Data Pipeline & Transforms | `data/loaders.py`, `data/transforms.py`, `data/contract.py` |
-| 2 | **Rawan Essam El-Din Fahmy** | 20230217 | Testing & Evaluation | `tests/`, `Evaluation/`, `Evaluation/Evaluation.ipynb` |
-| 3 | **Mohamed Saeed Ahmed** | 20230475 | CNN Architecture & Training | `model/cnn.py`, `model/train.py`, `model/evaluate.py` |
-| 4 | **Mahmoud Hossam El-Din Mahmoud** | 20230521 | API & Cloud Deployment | `api/`, `docker/`, `experiments/`, AWS EC2/RDS |
-| 5 | **Ahmed Alaa Abdel-Rahim Ali** | 20230029 | Genetic Algorithm Optimizer | `GA module/ga_optimizer_final.py`, `GA module/README.md` |
-| 6 | **Nour Hatem Mohamed El-Mahdi** | 20230629 | Dashboard UI & Data Loaders | `data/`, `ui/dashboard/`, `ui/dashboard/charts.py` |
-| 7 | **Yassin** | 20230662 | Model Architecture & Final Training | `model/cnn.py`, `model/run_baseline.py`, `best_config.json` |
-
----
 
 ## License
 
